@@ -3,6 +3,7 @@ namespace App\Controllers\Auth;
 
 use App\Controllers\BaseController;
 use App\Entities\User;
+use App\Entities\UserInfo;
 use Faker\Factory;
 
 
@@ -16,30 +17,35 @@ class Register extends BaseController
 	
 	public function index()
 	{
+		$model = model('CountriesModel');
+		return view('Auth/register', ['countries' => $model->findAll()]);
+	}
+	
+	public function store()
+	{
 		$faker = Factory::create();
-		
 		$data = [
 //			'email' => 'uncorreo@email.com',
 			'email' => $faker->email(),
 			'password' => $faker->password(),
 			'name' => $faker->name(),
 			'surname' => $faker->lastname(),
-			'id_country' => 12,
-			'group' => 2,
+			'id_country' => $faker->numberBetween(1, 15),
+			'group' => $faker->numberBetween(1, 2),
 		];
-		
 		$user = new User($data);
 		$user->getUserName();
+		
 		$model = model('UsersModel');
+		//		$model->withGroup('admin');
 		$model->withGroup($this->configs->defaultGroupUsers);
-//		$model->withGroup('admin');
+		
+		$userInfo = new UserInfo($data);
+		$model->addInfoUser($userInfo);
+		
+		//d($user);
 		$model->save($user);
 		
-		return view('Auth/register');
-	}
-	
-	public function store()
-	{
-	
+		return view('Auth/_');
 	}
 }

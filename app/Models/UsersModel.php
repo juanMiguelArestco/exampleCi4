@@ -4,6 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 use App\Entities\User;
+use App\Entities\UserInfo;
 
 class UsersModel extends Model
 {
@@ -28,6 +29,13 @@ class UsersModel extends Model
 	protected $deletedField  = 'deleted_at';
 	
 	protected $beforeInsert = ['addGroup'];
+	protected $afterInsert = ['storeUserInfo'];
+	
+	protected function storeUserInfo($data){
+		$this->infoUser->id_user = $data['id'];
+		$modelInfo = model('UsersInfoModel');
+		$modelInfo->insert($this->infoUser);
+	}
 	
 	protected function addGroup($data){
 		$data['data']['group'] = $this->assingGroup;
@@ -35,6 +43,7 @@ class UsersModel extends Model
 	}
 	
 	protected $assingGroup;
+	protected $infoUser;
 	
 	public function withGroup(string $group)
 	{
@@ -48,4 +57,13 @@ class UsersModel extends Model
 		
 	}
 	
+	public function addInfoUser(UserInfo $ui)
+	{
+		$this->infoUser = $ui;
+	}
+	
+	public function buscarId($username)
+	{
+	
+	}
 }

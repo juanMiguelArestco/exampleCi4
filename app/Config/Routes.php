@@ -34,11 +34,11 @@ $routes->setAutoRoute(false);
 // route since we don't have to scan directories.
 
 $routes->group('', ['namespace' => 'App\Controllers\Front'], function($routes){
-	$routes->get('/', 'Home::index');
+	$routes->get('/', 'Home::index', ['as' => 'home']);
 });
 
 $routes->group('auth', ['namespace' => 'App\Controllers\Auth'], function($routes){
-	$routes->get('login', 'Register::index');
+	$routes->get('registro', 'Register::index', ['as' => 'register']);
 });
 
 //$routes->get('/', 'Home::index');
