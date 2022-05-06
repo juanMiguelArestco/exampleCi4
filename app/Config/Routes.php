@@ -39,6 +39,15 @@ $routes->group('', ['namespace' => 'App\Controllers\Front'], function($routes){
 
 $routes->group('auth', ['namespace' => 'App\Controllers\Auth'], function($routes){
 	$routes->get('registro', 'Register::index', ['as' => 'register']);
+	$routes->post('store', 'Register::store');
+	$routes->get('login', 'Login::index', ['as' => 'login']);
+	$routes->post('signin', 'Login::signin', ['as' => 'signin']);
+	$routes->get('logout', 'Login::signout', ['as' => 'signout']);
+});
+
+//$routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'auth:admin,user'], function($routes){
+$routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'auth:admin'], function($routes){
+	$routes->get('articulos', 'Posts::index', ['as' => 'posts']);
 });
 
 //$routes->get('/', 'Home::index');

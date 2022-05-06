@@ -2,9 +2,11 @@
 
 namespace App\Filters;
 
+use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use function PHPUnit\Framework\throwException;
 
 class Auth implements FilterInterface
 {
@@ -25,7 +27,28 @@ class Auth implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        //if(!)
+        if(!session()->is_logged){
+			return redirect()->route('login')->with('msg', [
+				'type' => 'warning',
+				'title' => 'Sin acceso',
+				'body' => 'Primero tiene que iniciar session',
+			]);
+        }
+		
+		$model = model('UsersModel');
+		if(!$user = $model->getUserBy('id', session('id_user'))){
+			session()->destroy();
+			return redirect()->route('login')->with('msg', [
+				'type' => 'danger',
+				'title' => 'Usuario sin acceso',
+				'body' => 'Este usuario ya no tiene acceso al admin',
+			]);
+		}
+		
+		
+		if(!in_array($user->getRole()->name_group, $arguments)){
+			throw PageNotFoundException::forPageNotFound();
+		}
     }
 
     /**

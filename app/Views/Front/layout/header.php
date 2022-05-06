@@ -17,9 +17,19 @@
 		  <li class="<?= service('request')->uri->getpath() == 'auth/registro' ? 'is-active' : '' ?>">
 			<a href="<?php echo site_url(base_url(route_to('register'))) ?>">Registro</a>
 		  </li>
-		  <li>
-			<a>Ingreso</a>
-		  </li>
+		  <?php if(session()->is_logged): ?>
+			<li>
+			  <a href="<?php echo site_url(base_url(route_to('posts'))) ?>">Ir al dashboard</a>
+			</li>
+			<li>
+			  <a href="<?php echo site_url(base_url(route_to('signout'))) ?>">Salir</a>
+			</li>
+		  <?php else: ?>
+			<li class="<?= service('request')->uri->getpath() == 'auth/login' ? 'is-active' : '' ?>">
+			  <a href="<?php echo site_url(base_url(route_to('login'))) ?>">Ingreso</a>
+			</li>
+		  <?php endif; ?>
+		  
 		</ul>
 	  </div>
 	</nav>

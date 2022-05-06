@@ -23,29 +23,40 @@ class Register extends BaseController
 	
 	public function store()
 	{
-		$faker = Factory::create();
-		$data = [
-//			'email' => 'uncorreo@email.com',
-			'email' => $faker->email(),
-			'password' => $faker->password(),
-			'name' => $faker->name(),
-			'surname' => $faker->lastname(),
-			'id_country' => $faker->numberBetween(1, 15),
-			'group' => $faker->numberBetween(1, 2),
-		];
-		$user = new User($data);
-		$user->getUserName();
+		$validation = service('validation');
+		
+		$validation->setRules([
+			'name' => "required|alpha_space",
+			'surname' => "required|alpha_space",
+			'email' => "required|valid_email|is_unique[users.email]",
+			'id_country' => "required|is_not_unique[countries.id_country]",
+			'password' => "required|matches[c-password]",
+		]);
+		
+		if(!$validation->withRequest($this->request)->run()){
+			//dd($validation->getErrors());
+			return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+		}
+		
+		$user = new User($this->request->getPost());
+		$user->generatetUserName();
 		
 		$model = model('UsersModel');
 		//		$model->withGroup('admin');
-		$model->withGroup($this->configs->defaultGroupUsers);
+		//$model->withGroup($this->configs->defaultGroupUsers);
+		$model->withGroup(config('Blog')->defaultGroupUsers);
 		
-		$userInfo = new UserInfo($data);
+		$userInfo = new UserInfo($this->request->getPost());
 		$model->addInfoUser($userInfo);
 		
 		//d($user);
 		$model->save($user);
 		
-		return view('Auth/_');
+		return redirect()->route('login')
+			->with('msg',[
+			'type' => 'success',
+			'title' => 'Listo!',
+			'body' => 'Usuario registrado con éxito!',
+		]);
 	}
 }

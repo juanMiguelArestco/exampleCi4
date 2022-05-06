@@ -62,8 +62,8 @@ class UsersModel extends Model
 		$this->infoUser = $ui;
 	}
 	
-	public function buscarId($username)
+	public function getUserBy(string $column, string $value)
 	{
-	
+		return $this->where($column, $value)->first();
 	}
 }

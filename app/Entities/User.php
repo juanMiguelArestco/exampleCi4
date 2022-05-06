@@ -10,10 +10,16 @@ class User extends Entity{
 		$this->attributes['password'] = password_hash($password, PASSWORD_DEFAULT);
 	}
 	
-	public function getUserName(){
+	public function generatetUserName(){
 		return $this->attributes['username'] = explode(' ', $this->name)[0].explode(' ', $this->surname)[0];
 	}
 	
+	public function getRole()
+	{
+		$model = model('GroupsModel');
+		return $model->where('id_group', $this->group)->first();
+		
+	}
 	
 	
 }
