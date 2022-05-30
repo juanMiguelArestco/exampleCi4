@@ -8,14 +8,13 @@ class Login extends BaseController
 {
     public function index()
     {
-		if (!session()->is_logged){
-			return view('Auth/login');
-		}
-		
-		return redirect()->route('posts');
-    
+  		if (!session()->is_logged){
+  			return view('Auth/login');
+  		}
+	    return redirect()->route('posts');
+
     }
-	
+
 	public function signin()
 	{
 		if(!$this->validate([
@@ -28,7 +27,7 @@ class Login extends BaseController
 		}
 		$email = trim($this->request->getVar('email'));
 		$password = trim($this->request->getVar('password'));
-		
+
 		$model = model('UsersModel');
 		if(!$user = $model->getUserBy('email', $email)){
 			return redirect()->back()->with('msg',[
@@ -37,7 +36,7 @@ class Login extends BaseController
 				'body' => 'Este usuario no se encuentra registrado!',
 			]);
 		}
-		
+
 		if(!password_verify($password, $user->password)){
 			return redirect()->back()->with('msg',[
 				'type' => 'danger',
@@ -51,16 +50,16 @@ class Login extends BaseController
 			'username' => $user->username,
 			'is_logged' => true
 		]);
-		
+
 		return redirect()->route('posts')->with('msg', [
 			'type' => 'success',
 			'title' => 'Bienvenido',
 			'body' => 'Todo listo, iniciemos!',
 		]);
-		
-		
+
+
 	}
-	
+
 	public function signout()
 	{
 		session()->destroy();
